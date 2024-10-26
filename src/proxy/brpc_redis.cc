@@ -18,8 +18,8 @@ void* thread_entry(void* arg) {
   return nullptr;
 }
 
-void BrpcRedis::Open() {
-
+int BrpcRedis::Open(PString &ip) {
+  return channel_.Init(ip.c_str(), &options);
 }
 
 void BrpcRedis::PushRedisTask(const std::shared_ptr<ProxyBaseCmd>& task) {
@@ -27,12 +27,9 @@ void BrpcRedis::PushRedisTask(const std::shared_ptr<ProxyBaseCmd>& task) {
   tasks_.push_back(task);
 }
 
-void SetResponse(const brpc::RedisResponse& response, const std::shared_ptr<ProxyBaseCmd>& task, size_t index) {
+void BrpcRedis::SetResponse(const brpc::RedisResponse& response, const std::shared_ptr<ProxyBaseCmd>& task, size_t index) {
   // TODO: write callback
   LOG(INFO) << response.reply(index);
-  
-
-
 }
 
 void BrpcRedis::Commit() {
@@ -43,7 +40,7 @@ void BrpcRedis::Commit() {
   size_t batch_size = std::min((size_t) tasks_.size(), batch_size_);
 
   {
-    std::lock_guard<std::mutex> lock(lock__);
+    std::scoped_lock lock(lock__);
     task_batch.assign(tasks_.begin(), tasks_.begin() + batch_size);
     tasks_.erase(tasks_.begin(), tasks_.begin() + batch_size);
   }

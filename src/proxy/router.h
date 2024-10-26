@@ -78,6 +78,7 @@ private:
 namespace pikiwidb {
 class Router {
 public:
+  Router() = default;
   static Router& Instance();
   
   Router(const Router&) = delete;
@@ -88,10 +89,9 @@ public:
   void forward(std::shared_ptr<ProxyBaseCmd> task);
 
 private:
-  Router() = default;
   std::atomic<uint64_t> t_counter_ = 0;
   std::atomic<size_t> brpc_redis_num_{0};
-  std::vector<BrpcRedis> brpc_redis_;
+  std::vector<std::unique_ptr<BrpcRedis>> brpc_redis_;
   std::hash<std::string> hasher_;
 
   TimerWheel* timer_wheel_;

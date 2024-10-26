@@ -8,23 +8,24 @@
 #include <vector>
 
 #include "brpc/redis_reply.h"
-#include "redis.h"
+#include "storage/src/redis.h"
 #include "proxy_base_cmd.h"
 
 namespace pikiwidb {
 
-class BrpcRedis : public Redis {
+class BrpcRedis {
 public:
   void Init() { options.protocol = brpc::PROTOCOL_REDIS; }
   
-  void Open();
+  int Open(PString &ip);
   
   void PushRedisTask(const std::shared_ptr<ProxyBaseCmd>& task);
 
   void Commit();
 
-  brpc::Channel GetChannel() { return channel_; }
-  brpc::ChannelOptions GetOptions() { return options; }
+  // brpc::Channel GetChannel() { return channel_; }
+  
+  // brpc::ChannelOptions GetOptions() { return options; }
 
   BrpcRedis() { this->Init(); }
   

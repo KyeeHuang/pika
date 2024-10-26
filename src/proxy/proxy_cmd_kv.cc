@@ -12,11 +12,10 @@ std::string SetProxyCmd::GetCommand() {
 }
 
 bool SetProxyCmd::DoInitial(PClient* client) {
- // client 
  client_.reset(client);
+ return true;
 }
   
-// 
 void SetProxyCmd::Execute() {
   // TODO: route, (leave interface for mget or mset,
   // split task and combine callback)
@@ -31,15 +30,12 @@ void SetProxyCmd::Execute() {
 } 
 
 void SetProxyCmd::CallBack() {
-  // same as cmd_kv.cc
-  // after DoCmd ?
-  
   client_->SetRes(CmdRes::kOK);
 }
 
 } // namespace pikiwidb
 
-// TODO:
-// 1. 解析 config 文件，知道后台有多少 pikiwidb 
-// 2. flag 以 proxy 模式启动
-// 3. client
+// List:
+// 1. config file, set number of pikiwidb 
+// 2. set flag and startup with proxy mode 
+// 3. client sdk
